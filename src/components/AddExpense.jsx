@@ -5,8 +5,11 @@ function ExpenseForm( { addExpense } ) {
         name: "",
         amount: "",
         category: "",
+        customCategory: "",
         date: "",
     });
+
+    const [isCustom, setIsCustom] = useState(false);
 
     function handleInput(event) {
         const {value, name} = event.target;
@@ -16,7 +19,26 @@ function ExpenseForm( { addExpense } ) {
             ...prevValue,
             [name]: value
         }));
+
+        if(name === "customCategory") {
+            setFormDetails((prevValue) => ({
+                ...prevValue,
+                category: value,
+            }));
+        }
     }
+
+    function handleCategoryChange(event) {
+        const selectedValue = event.target.value;
+        if(selectedValue === "Custom") {
+            setIsCustom(true);
+            setFormDetails((prev) => ({...prev, category: ""}));
+        } else {
+            setIsCustom(false);
+            setFormDetails((prev) => ({...prev, category: selectedValue}));
+        }
+    }
+
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -57,17 +79,23 @@ function ExpenseForm( { addExpense } ) {
                 </label>
 
                 <label>Category: 
-                    <select 
+                    <select
                         name="category"
                         value={formDetails.category}
-                        onChange={handleInput}
+                        onChange={handleCategoryChange}
                     >
                         <option value="" >Select Category</option>
                         <option value="Food" >Food</option>
                         <option value="Travel" >Travel</option>
                         <option value="Utility" >Utility</option>
                         <option value="Utran" >Utran</option>
+                        <option value="Custom">Custom</option>
                     </select>
+                    {isCustom && (<input 
+                        placeholder="Enter custom input" 
+                        type="text" 
+                        name="customCategory"
+                        onChange={handleInput} />)}
                 </label>
 
                 <label>Due-Date:
